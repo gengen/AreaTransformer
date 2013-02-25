@@ -65,6 +65,9 @@ public class OverlayView extends View {
     public boolean onTouchEvent(MotionEvent event){
         float x = event.getX();
         float y = event.getY();
+        
+        /*上のx,yをGoogleMapのProjectionに入れて座標を取得する*/
+        /*開始座標と終了座標で一定以上離れている場合は囲まれていないと判断するなどの処理を入れる*/
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:

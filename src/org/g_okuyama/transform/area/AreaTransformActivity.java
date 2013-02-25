@@ -119,6 +119,7 @@ public class AreaTransformActivity extends FragmentActivity {
             //mMap.setMyLocationEnabled(true);
         }
         
+        /*
         mMap.setOnMapClickListener(new OnMapClickListener(){
 
             @Override
@@ -127,6 +128,7 @@ public class AreaTransformActivity extends FragmentActivity {
                 Log.d(TAG, "onMapClick");
             }
         });
+        */
         
         
     }
