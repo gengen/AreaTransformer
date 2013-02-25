@@ -118,19 +118,6 @@ public class AreaTransformActivity extends FragmentActivity {
             //マーカを現在地に持ってきたいときは設定する
             //mMap.setMyLocationEnabled(true);
         }
-        
-        /*
-        mMap.setOnMapClickListener(new OnMapClickListener(){
-
-            @Override
-            public void onMapClick(LatLng arg0) {
-                // TODO Auto-generated method stub
-                Log.d(TAG, "onMapClick");
-            }
-        });
-        */
-        
-        
     }
     
     private void setDefaultLocation(){

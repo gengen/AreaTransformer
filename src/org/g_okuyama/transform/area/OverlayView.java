@@ -30,7 +30,7 @@ public class OverlayView extends View {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(12);
+        mPaint.setStrokeWidth(10);
         
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
@@ -95,7 +95,9 @@ public class OverlayView extends View {
     
     @Override
     protected void onDraw(Canvas canvas){
+    	super.onDraw(canvas);
         //canvas.drawColor(0xFFAAAAAA);
+    	
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);
     }
