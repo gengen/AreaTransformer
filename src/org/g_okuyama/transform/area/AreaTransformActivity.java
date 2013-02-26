@@ -20,8 +20,10 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class AreaTransformActivity extends FragmentActivity {
     public static final String TAG = "AreaTransformer";
@@ -40,6 +42,7 @@ public class AreaTransformActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_area_transform);
         mContext = getApplicationContext();
         
@@ -66,6 +69,8 @@ public class AreaTransformActivity extends FragmentActivity {
                 mCalBtn.setEnabled(true);
                 mClearBtn.setEnabled(true);
                 mOverlay.setVisibility(View.VISIBLE);
+                /*これを入れてXperiaでどうか。。*/
+                mOverlay.bringToFront();
             }
         });
         
@@ -79,6 +84,19 @@ public class AreaTransformActivity extends FragmentActivity {
                 mClearBtn.setEnabled(false);
                 mOverlay.setVisibility(View.GONE);
                 OverlayView view = (OverlayView)findViewById(R.id.view);
+                
+                //面積
+                float area = view.getArea();
+                Log.d(TAG, "area = " + area + "m2");
+                float unit = area / 46755/*東京ドーム(m2)*/;
+                TextView text = (TextView)findViewById(R.id.text);
+                text.setText("東京ドーム" + unit + "個分");
+
+                float d = view.getDistance();
+                TextView dist = (TextView)findViewById(R.id.dist);
+                dist.setText("     距離" + d + "m");
+                
+                //描画をクリア
                 view.clearCanvas();
             }
         });
@@ -117,6 +135,10 @@ public class AreaTransformActivity extends FragmentActivity {
             setDefaultLocation();
             //マーカを現在地に持ってきたいときは設定する
             //mMap.setMyLocationEnabled(true);
+            
+            if(mOverlay != null){
+                mOverlay.setMap(mMap);
+            }
         }
     }
     
