@@ -6,6 +6,7 @@
     tools:context=".AreaTransformActivity" >
 
     <FrameLayout
+        android:id="@+id/frame"
 	    android:layout_width="match_parent"
         android:layout_height="0pt"
         android:layout_weight="1"
@@ -16,12 +17,7 @@
 	    android:layout_height="match_parent"
         class="com.google.android.gms.maps.SupportMapFragment"
     />
-    
-    <org.g_okuyama.transform.area.OverlayView
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+
     </FrameLayout>        
     
     <LinearLayout

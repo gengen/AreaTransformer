@@ -41,13 +41,11 @@ public class OverlayView extends View {
     private float mDistance = 0.0f;
     //面積
     private float mArea = 0.0f;
+    //囲まれているかどうかのフラグ
+    private boolean mFlag = false;
     
-    Handler mHandler;
-    Context mContext;
-    
-    public OverlayView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        mContext = context;
+    public OverlayView(Context context/*, AttributeSet attrs*/) {
+        super(context/*, attrs*/);
         
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -60,8 +58,6 @@ public class OverlayView extends View {
         
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
-        
-        mHandler = new Handler();
     }
     
     private float mX, mY;
@@ -76,6 +72,7 @@ public class OverlayView extends View {
         //初期化
         mDistance = 0.0f;
         mArea = 0.0f;
+        mFlag = false;
         //現在の地図表示位置を取得
         mProjection = mMap.getProjection();
         LatLng l = mProjection.fromScreenLocation(new Point((int)x, (int)y));
@@ -127,24 +124,10 @@ public class OverlayView extends View {
         //面積計算(暫定)
         mArea = (mDistance / 4) * (mDistance / 4);
         
-        //始点と終点の距離が一定以上離れている場合はアラートを出す
+        //始点と終点の距離が一定以上離れているかをチェック
         float dist = mStart.distanceTo(mEnd);
-        if(dist > 1000){//1km
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    new AlertDialog.Builder(mContext)
-                    .setTitle("通知")
-                    .setMessage("囲んでください")
-                    .setPositiveButton("はい", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            clearCanvas();
-                        }
-                    })
-                    .show();
-                    return;
-                }
-            });
+        if(dist < 1000){//1km
+            mFlag = true;
         }
     }
 
@@ -211,4 +194,9 @@ public class OverlayView extends View {
     float getDistance(){
         return mDistance;
     }
+    
+    boolean isCircled(){
+        return mFlag;
+    }
+    
 }
