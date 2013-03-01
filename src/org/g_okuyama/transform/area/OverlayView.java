@@ -121,8 +121,12 @@ public class OverlayView extends View {
         //最終的な距離を算出
         mDistance += mPrev.distanceTo(mEnd);
         Log.d(AreaTransformActivity.TAG, "distance = " + mDistance + "m");
+
         //面積計算(暫定)
         mArea = (mDistance / 4) * (mDistance / 4);
+        //->実際は、Bitmapのスナップショットから囲まれた部分のドット数を数えて計算する。
+        //Projectionから緯度、軽度を導き、1ドットの距離を算定する。
+        //ドットの総数と距離から面積を求める。
         
         //始点と終点の距離が一定以上離れているかをチェック
         float dist = mStart.distanceTo(mEnd);
@@ -161,17 +165,19 @@ public class OverlayView extends View {
     
     @Override
     protected void onDraw(Canvas canvas){
-    	super.onDraw(canvas);
+    	//super.onDraw(canvas);
         //canvas.drawColor(0xFFAAAAAA);
     	
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);
     }
 
+    /*
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
         setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
     }
+    */
 
     void clearCanvas(){
         Log.d(AreaTransformActivity.TAG, "clearCanvas");
