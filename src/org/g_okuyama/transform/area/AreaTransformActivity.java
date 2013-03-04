@@ -1,6 +1,10 @@
 
 package org.g_okuyama.transform.area;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,6 +19,8 @@ import com.google.android.gms.maps.model.LatLng;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -25,9 +31,12 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class AreaTransformActivity extends FragmentActivity {
@@ -40,14 +49,18 @@ public class AreaTransformActivity extends FragmentActivity {
     Handler mHandler;
 
     //button
+    Button mSearchBtn;
     Button mStartBtn;
     Button mCalBtn;
     Button mClearBtn;
+    
+    LinearLayout mSearchLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_area_transform);
 
         mHandler = new Handler();
@@ -63,9 +76,38 @@ public class AreaTransformActivity extends FragmentActivity {
             .commit();
         }
         
-        //オーバレイビューがイベントを受け取らないようにする
-        //mOverlay = (OverlayView)findViewById(R.id.view);
-        //mOverlay.setVisibility(View.INVISIBLE);
+        mSearchLayout = (LinearLayout)findViewById(R.id.search_layout);
+        mSearchBtn = (Button)findViewById(R.id.search);
+        mSearchBtn.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                EditText view = (EditText)findViewById(R.id.area);
+                String text = view.getText().toString();
+                if(text.length() == 0){
+                    //TODO:0文字はエラー
+                    return;
+                }
+                
+                //文字列から緯度・軽度を算出
+                Geocoder geocoder = new Geocoder(AreaTransformActivity.this, Locale.getDefault());
+                try{
+                     List<Address> addressList = geocoder.getFromLocationName(text, 1);
+                     Address address = addressList.get(0);      
+                     double lat = address.getLatitude();
+                     double lng = address.getLongitude();
+                     
+                     CameraUpdate camera = CameraUpdateFactory
+                             .newCameraPosition(new CameraPosition.Builder()
+                             .target(new LatLng(lat, lng))
+                             .zoom(15.0f).build());
+                     mMap.moveCamera(camera);
+                     
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
         
         mStartBtn = (Button)findViewById(R.id.start);
         mStartBtn.setOnClickListener(new OnClickListener(){
@@ -74,8 +116,8 @@ public class AreaTransformActivity extends FragmentActivity {
                 mStartBtn.setEnabled(false);
                 mCalBtn.setEnabled(true);
                 mClearBtn.setEnabled(true);
-                //mOverlay.setVisibility(View.VISIBLE);
-                //mOverlay.bringToFront();
+                mSearchLayout.setVisibility(View.INVISIBLE);
+
                 //描画用のViewを重ねる
                 addView();
             }
@@ -110,7 +152,7 @@ public class AreaTransformActivity extends FragmentActivity {
                 mStartBtn.setEnabled(true);
                 mCalBtn.setEnabled(false);
                 mClearBtn.setEnabled(false);
-                //mOverlay.setVisibility(View.INVISIBLE);
+                mSearchLayout.setVisibility(View.VISIBLE);
 
                 //面積
                 float area = mOverlay.getArea();
@@ -144,31 +186,11 @@ public class AreaTransformActivity extends FragmentActivity {
     }
     
     void addView(){
-//        if(mOverlay == null){
-            /*
-            View view = getLayoutInflater().inflate(R.layout.add_view, null);
-            addContentView(view, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-            */
-            mOverlay = new OverlayView(this);
-            //mOverlay = (OverlayView)findViewById(R.id.view);
-            mOverlay.setMap(mMap);
+        mOverlay = new OverlayView(this);
+        mOverlay.setMap(mMap);
             
-            FrameLayout frame = (FrameLayout)findViewById(R.id.frame);
-            frame.addView(mOverlay, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-            /*
-        }
-        else{
-            mOverlay.setVisibility(View.VISIBLE);
-        }*/
-        
-        //ボタンが効かなくなるので、ボタンを前に出す。
-        /*
-        mStartBtn.bringToFront();
-        mCalBtn.bringToFront();
-        mClearBtn.bringToFront();
-        */
-        //Button btn = (Button)findViewById(R.id.clear_button);
-        //btn.setVisibility(View.INVISIBLE);
+        FrameLayout frame = (FrameLayout)findViewById(R.id.frame);
+        frame.addView(mOverlay, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
     
     @Override
