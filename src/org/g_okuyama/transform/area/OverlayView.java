@@ -165,19 +165,9 @@ public class OverlayView extends View {
     
     @Override
     protected void onDraw(Canvas canvas){
-    	//super.onDraw(canvas);
-        //canvas.drawColor(0xFFAAAAAA);
-    	
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);
     }
-
-    /*
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
-    }
-    */
 
     void clearCanvas(){
         Log.d(AreaTransformActivity.TAG, "clearCanvas");
