@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -145,6 +146,10 @@ public class AreaTransformActivity extends FragmentActivity {
             });
             return;
         }
+        
+        //ソフトキーボードを消す
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         
         //文字列から緯度・軽度を算出
         Geocoder geocoder = new Geocoder(AreaTransformActivity.this, Locale.getDefault());

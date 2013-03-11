@@ -30,6 +30,7 @@
             android:value="AIzaSyCtMEWeG9pLmOgwxHkSmexgD3ToQwmzZ6w"/>
         <activity
             android:name="org.g_okuyama.transform.area.AreaTransformActivity"
+            android:configChanges="orientation|keyboardHidden" 
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +40,7 @@
         </activity>
         <activity
             android:name="org.g_okuyama.transform.area.DisplayActivity"
+            android:configChanges="orientation|keyboardHidden" 
 	    	android:theme="@android:style/Theme.Dialog"
 	   	>
         </activity>
