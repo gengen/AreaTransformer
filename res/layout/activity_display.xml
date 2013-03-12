@@ -9,7 +9,6 @@
 	    android:layout_width="match_parent"
         android:layout_height="0pt"
         android:layout_weight="1"
-        android:background="#00000000"
 	>        
     </FrameLayout>        
     
@@ -20,19 +19,29 @@
         android:background="#ffffff"
         >
         
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="0pt"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-        />
-        
         <ImageView
             android:id="@+id/image"
             android:layout_width="0pt"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:src="@drawable/dome"
+        />
+        
+        <TextView
+            android:id="@+id/unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
         />
         
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="#ffffff"
+    />
+    
 </LinearLayout>

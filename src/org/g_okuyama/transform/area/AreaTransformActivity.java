@@ -237,33 +237,46 @@ public class AreaTransformActivity extends FragmentActivity {
 
         //面積を計算、表示
         calcurate();
-        
+
+        /*
         //描画をクリア
         mOverlay.clearCanvas();
         //描画用のViewを削除
         FrameLayout frame = (FrameLayout)findViewById(R.id.frame);
         frame.removeView(mOverlay);
+        */
     }
     
     private void calcurate(){
         //面積
         float area = mOverlay.getArea();
         Log.d(TAG, "area = " + area + "m2");
-        float unit = area / 46755/*東京ドーム(m2)*/;
+        /*
+        float unit = area / 46755; //東京ドーム(m2)
         TextView text = (TextView)findViewById(R.id.text);
         text.setText("東京ドーム" + unit + "個分");
 
         float d = mOverlay.getDistance();
         TextView dist = (TextView)findViewById(R.id.dist);
         dist.setText("     距離" + d + "m");
+        */
         
         Intent intent = new Intent(this, DisplayActivity.class);
+        intent.putExtra("area", area);
         startActivity(intent);
     }
     
     @Override
     protected void onResume(){
         super.onResume();
+        
+        if(mOverlay != null){
+            mOverlay.clearCanvas();
+            //描画用のViewを削除
+            FrameLayout frame = (FrameLayout)findViewById(R.id.frame);
+            frame.removeView(mOverlay);
+            mOverlay = null;
+        }
         
         if(mMap == null){
             mMap = mMapFragment.getMap();

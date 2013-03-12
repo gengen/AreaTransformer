@@ -22,6 +22,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class OverlayView extends View {
+    private static final boolean DEBUG = true;
+    
     Paint mPaint;
     
     private Bitmap  mBitmap;
@@ -44,8 +46,8 @@ public class OverlayView extends View {
     //囲まれているかどうかのフラグ
     private boolean mFlag = false;
     
-    public OverlayView(Context context/*, AttributeSet attrs*/) {
-        super(context/*, attrs*/);
+    public OverlayView(Context context) {
+        super(context);
         
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -80,7 +82,9 @@ public class OverlayView extends View {
         mStart = new Location("start");
         mStart.setLatitude(l.latitude);
         mStart.setLongitude(l.longitude);
-        Log.d(AreaTransformActivity.TAG, "lat = " + l.latitude + " ,long = " + l.longitude);
+        if(DEBUG){
+            Log.d(AreaTransformActivity.TAG, "lat = " + l.latitude + " ,long = " + l.longitude);
+        }
         mPrev = mStart;    
     }
     
@@ -98,10 +102,14 @@ public class OverlayView extends View {
         Location cur = new Location("current");
         cur.setLatitude(l.latitude);
         cur.setLongitude(l.longitude);
-        Log.d(AreaTransformActivity.TAG, "cur_lat = " + l.latitude + " ,cur_long = " + l.longitude);
+        if(DEBUG){
+            Log.d(AreaTransformActivity.TAG, "cur_lat = " + l.latitude + " ,cur_long = " + l.longitude);
+        }
         //距離を加算
         mDistance += mPrev.distanceTo(cur);
-        Log.d(AreaTransformActivity.TAG, "distance = " + mDistance + "m");
+        if(DEBUG){
+            Log.d(AreaTransformActivity.TAG, "distance = " + mDistance + "m");
+        }
         mPrev = cur;
     }
     
@@ -117,10 +125,14 @@ public class OverlayView extends View {
         mEnd = new Location("end");
         mEnd.setLatitude(l.latitude);
         mEnd.setLongitude(l.longitude);
-        Log.d(AreaTransformActivity.TAG, "cur_lat = " + l.latitude + " ,cur_long = " + l.longitude);
+        if(DEBUG){
+            Log.d(AreaTransformActivity.TAG, "cur_lat = " + l.latitude + " ,cur_long = " + l.longitude);
+        }
         //最終的な距離を算出
         mDistance += mPrev.distanceTo(mEnd);
-        Log.d(AreaTransformActivity.TAG, "distance = " + mDistance + "m");
+        if(DEBUG){
+            Log.d(AreaTransformActivity.TAG, "distance = " + mDistance + "m");
+        }
 
         //面積計算(暫定)
         mArea = (mDistance / 4) * (mDistance / 4);
@@ -130,6 +142,7 @@ public class OverlayView extends View {
         
         //始点と終点の距離が一定以上離れているかをチェック
         float dist = mStart.distanceTo(mEnd);
+        //TODO:地図の拡大縮小サイズによって、変更させる
         if(dist < 1000){//1km
             mFlag = true;
         }
