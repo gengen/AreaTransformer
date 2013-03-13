@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">AreaTransformer</string>
-	<string name="notify_search_title">Notify</string>
-	<string name="notify_search_message">Please input one character or more.</string>
-	<string name="notify_search_yes">Yes</string>
-	<string name="notify_circle_title">Notify</string>
-	<string name="notify_circle_message">Please circle.</string>
-	<string name="notify_circle_yes">Yes</string>
-
-	<string name="toast_search_not_found">Coundn\'t get location data.</string>
+    <string name="app_name">ドーム変換くん</string>
+	<string name="notify_search_title">通知</string>
+	<string name="notify_search_message">1文字以上入力してください</string>
+	<string name="notify_search_yes">はい</string>
+	<string name="notify_circle_title">通知</string>
+	<string name="notify_circle_message">囲んでください</string>
+	<string name="notify_circle_yes">はい</string>
+	
+	<string name="toast_search_not_found">見つかりませんでした</string>
+	
+	<string name="notify_calc_title">通知</string>
+	<string name="notify_calc_message">計測不能です</string>
+	<string name="notify_calc_yes">はい</string>
 	
 </resources>

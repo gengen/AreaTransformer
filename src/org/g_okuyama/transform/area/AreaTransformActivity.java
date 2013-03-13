@@ -38,6 +38,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,11 +54,14 @@ public class AreaTransformActivity extends FragmentActivity {
 
     //button
     Button mSearchBtn;
-    Button mStartBtn;
-    Button mCalBtn;
-    Button mClearBtn;
+    Button mStartCalcBtn;
+    ImageButton mClearBtn;
+    ImageButton mBackBtn;
     
+    //検索用レイアウト
     LinearLayout mSearchLayout;
+    //モードフラグ(0:地図モード、1:描画モード)
+    int mMode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,27 +96,26 @@ public class AreaTransformActivity extends FragmentActivity {
             }
         });
         
-        mStartBtn = (Button)findViewById(R.id.start);
-        mStartBtn.setOnClickListener(new OnClickListener(){
+        mStartCalcBtn = (Button)findViewById(R.id.start_and_cal);
+        mStartCalcBtn.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
-                //描画開始
-                startDrawing();
+                if(mMode == 0){
+                    //描画開始
+                    startDrawing();
+                    mMode = 1;
+                }
+                else{
+                    //描画面積の計算
+                    calcurateArea();
+                    mMode = 0;
+                }
             }
         });
         
-        mCalBtn = (Button)findViewById(R.id.cal);
-        mCalBtn.setEnabled(false);
-        mCalBtn.setOnClickListener(new OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                //描画面積の計算
-                calcurateArea();
-            }
-        });
-        
-        mClearBtn = (Button)findViewById(R.id.clear);
-        mClearBtn.setEnabled(false);
+        mClearBtn = (ImageButton)findViewById(R.id.clear);
+        //mClearBtn.setEnabled(false);
+        mClearBtn.setVisibility(View.INVISIBLE);
         mClearBtn.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -120,6 +123,29 @@ public class AreaTransformActivity extends FragmentActivity {
                     mOverlay.clearCanvas();
                 }
             }
+        });
+        
+        mBackBtn = (ImageButton)findViewById(R.id.back);
+        //mBackBtn.setEnabled(false);
+        mBackBtn.setVisibility(View.INVISIBLE);
+        mBackBtn.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(mOverlay != null){
+                    mOverlay.clearCanvas();
+                    //描画用のViewを削除
+                    FrameLayout frame = (FrameLayout)findViewById(R.id.frame);
+                    frame.removeView(mOverlay);
+                    mOverlay = null;
+                }
+                
+                mStartCalcBtn.setText("start");
+                mClearBtn.setVisibility(View.INVISIBLE);
+                mBackBtn.setVisibility(View.INVISIBLE);
+                mSearchLayout.setVisibility(View.VISIBLE);
+                mMode = 0;
+            }
+            
         });
     }
     
@@ -195,9 +221,11 @@ public class AreaTransformActivity extends FragmentActivity {
 
     /*描画開始*/
     private void startDrawing(){
-        mStartBtn.setEnabled(false);
-        mCalBtn.setEnabled(true);
-        mClearBtn.setEnabled(true);
+        mStartCalcBtn.setText("cal");
+        //mClearBtn.setEnabled(true);
+        mClearBtn.setVisibility(View.VISIBLE);
+        //mBackBtn.setEnabled(true);
+        mBackBtn.setVisibility(View.VISIBLE);
         mSearchLayout.setVisibility(View.INVISIBLE);
         
         //描画用Viewを追加
@@ -210,56 +238,19 @@ public class AreaTransformActivity extends FragmentActivity {
 
     /*描画面積の計算*/
     private void calcurateArea(){
-        //囲んでいなければエラー
-        if(!mOverlay.isCircled()){
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    new AlertDialog.Builder(AreaTransformActivity.this)
-                    .setTitle(R.string.notify_circle_title)
-                    .setMessage(R.string.notify_circle_message)
-                    .setPositiveButton(R.string.notify_circle_yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            mOverlay.clearCanvas();
-                        }
-                    })
-                    .show();
-                    return;
-                }
-            });
-            return;
-        }
-        
-        mStartBtn.setEnabled(true);
-        mCalBtn.setEnabled(false);
-        mClearBtn.setEnabled(false);
+        mStartCalcBtn.setText("start");
+        mClearBtn.setVisibility(View.INVISIBLE);
+        mBackBtn.setVisibility(View.INVISIBLE);
         mSearchLayout.setVisibility(View.VISIBLE);
 
         //面積を計算、表示
         calcurate();
-
-        /*
-        //描画をクリア
-        mOverlay.clearCanvas();
-        //描画用のViewを削除
-        FrameLayout frame = (FrameLayout)findViewById(R.id.frame);
-        frame.removeView(mOverlay);
-        */
     }
     
     private void calcurate(){
         //面積
         float area = mOverlay.getArea();
         Log.d(TAG, "area = " + area + "m2");
-        /*
-        float unit = area / 46755; //東京ドーム(m2)
-        TextView text = (TextView)findViewById(R.id.text);
-        text.setText("東京ドーム" + unit + "個分");
-
-        float d = mOverlay.getDistance();
-        TextView dist = (TextView)findViewById(R.id.dist);
-        dist.setText("     距離" + d + "m");
-        */
         
         Intent intent = new Intent(this, DisplayActivity.class);
         intent.putExtra("area", area);
@@ -291,9 +282,6 @@ public class AreaTransformActivity extends FragmentActivity {
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             UiSettings settings = mMap.getUiSettings();
             settings.setCompassEnabled(true);
-            //settings.setScrollGesturesEnabled(false);
-            //settings.setZoomControlsEnabled(false);
-            //settings.setZoomGesturesEnabled(false);
             setDefaultLocation();
             //マーカを現在地に持ってきたいときは設定する
             //mMap.setMyLocationEnabled(true);
@@ -311,5 +299,23 @@ public class AreaTransformActivity extends FragmentActivity {
                 .target(TOKYO)
                 .zoom(15.0f).build());
         mMap.moveCamera(camera);
+    }
+    
+    void displayCircleError(){
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(AreaTransformActivity.this)
+                .setTitle(R.string.notify_circle_title)
+                .setMessage(R.string.notify_circle_message)
+                .setPositiveButton(R.string.notify_circle_yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mOverlay.clearCanvas();
+                    }
+                })
+                .show();
+                return;
+            }
+        });
     }
 }

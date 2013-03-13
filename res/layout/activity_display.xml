@@ -5,13 +5,6 @@
     android:orientation="vertical"
     tools:context=".AreaTransformActivity" >
     
-    <FrameLayout
-	    android:layout_width="match_parent"
-        android:layout_height="0pt"
-        android:layout_weight="1"
-	>        
-    </FrameLayout>        
-    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -24,6 +24,8 @@ import android.view.View;
 public class OverlayView extends View {
     private static final boolean DEBUG = true;
     
+    Context mContext;
+    
     Paint mPaint;
     
     private Bitmap  mBitmap;
@@ -48,6 +50,7 @@ public class OverlayView extends View {
     
     public OverlayView(Context context) {
         super(context);
+        mContext = context;
         
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -74,7 +77,6 @@ public class OverlayView extends View {
         //初期化
         mDistance = 0.0f;
         mArea = 0.0f;
-        mFlag = false;
         //現在の地図表示位置を取得
         mProjection = mMap.getProjection();
         LatLng l = mProjection.fromScreenLocation(new Point((int)x, (int)y));
@@ -143,9 +145,12 @@ public class OverlayView extends View {
         //始点と終点の距離が一定以上離れているかをチェック
         float dist = mStart.distanceTo(mEnd);
         //TODO:地図の拡大縮小サイズによって、変更させる
-        if(dist < 1000){//1km
-            mFlag = true;
+        if(dist > 1000){//1km
+            //mFlag = true;
+            ((AreaTransformActivity)mContext).displayCircleError();
         }
+        
+        //TODO:2筆以上で描かれている場合もエラーとする
     }
 
     public boolean onTouchEvent(MotionEvent event){
@@ -203,9 +208,4 @@ public class OverlayView extends View {
     float getDistance(){
         return mDistance;
     }
-    
-    boolean isCircled(){
-        return mFlag;
-    }
-    
 }
