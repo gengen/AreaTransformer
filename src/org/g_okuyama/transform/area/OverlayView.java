@@ -43,14 +43,19 @@ public class OverlayView extends View {
     private Projection mProjection;
     //距離
     private float mDistance = 0.0f;
+    //1ピクセルの距離
+    private float m1PxDist = 0.0f;
     //面積
     private float mArea = 0.0f;
-    //囲まれているかどうかのフラグ
+    //1筆で描かれているかの判定フラグ
     private boolean mFlag = false;
+    //エラーフラグ(エラーダイアログ表示したのにOKが押されなかったとき用)
+    private boolean mErrFlag = false;
     
-    public OverlayView(Context context) {
+    public OverlayView(GoogleMap map, Context context) {
         super(context);
         mContext = context;
+        mMap = map;
         
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -63,6 +68,21 @@ public class OverlayView extends View {
         
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+        
+        mProjection = mMap.getProjection();
+        //1ピクセルの距離を測定する
+        LatLng p1 = mProjection.fromScreenLocation(new Point(0, 0));
+        Location l1 = new Location("p1");
+        l1.setLatitude(p1.latitude);
+        l1.setLongitude(p1.longitude);
+        LatLng p2 = mProjection.fromScreenLocation(new Point(0, 1));
+        Location l2 = new Location("p2");
+        l2.setLatitude(p2.latitude);
+        l2.setLongitude(p2.longitude);
+        m1PxDist = l1.distanceTo(l2);
+        if(DEBUG){
+            Log.d(AreaTransformActivity.TAG, "distance = " + m1PxDist);
+        }
     }
     
     private float mX, mY;
@@ -73,12 +93,18 @@ public class OverlayView extends View {
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
+        
+        if(mFlag){
+            //2筆以上で描かれた場合はエラーとする
+            ((AreaTransformActivity)mContext).displayCircleError2();
+            mErrFlag = true;
+        }
 
         //初期化
         mDistance = 0.0f;
         mArea = 0.0f;
+        mFlag = true;
         //現在の地図表示位置を取得
-        mProjection = mMap.getProjection();
         LatLng l = mProjection.fromScreenLocation(new Point((int)x, (int)y));
         //始めの緯度、軽度を算出
         mStart = new Location("start");
@@ -97,22 +123,22 @@ public class OverlayView extends View {
             mPath.quadTo(mX, mY, (x + mX)/2, (y + mY)/2);
             mX = x;
             mY = y;
-        }
-        
-        //現在の緯度、軽度を算出
-        LatLng l = mProjection.fromScreenLocation(new Point((int)x, (int)y));
-        Location cur = new Location("current");
-        cur.setLatitude(l.latitude);
-        cur.setLongitude(l.longitude);
-        if(DEBUG){
-            Log.d(AreaTransformActivity.TAG, "cur_lat = " + l.latitude + " ,cur_long = " + l.longitude);
-        }
-        //距離を加算
-        mDistance += mPrev.distanceTo(cur);
-        if(DEBUG){
-            Log.d(AreaTransformActivity.TAG, "distance = " + mDistance + "m");
-        }
-        mPrev = cur;
+            
+            //現在の緯度、軽度を算出
+            LatLng l = mProjection.fromScreenLocation(new Point((int)x, (int)y));
+            Location cur = new Location("current");
+            cur.setLatitude(l.latitude);
+            cur.setLongitude(l.longitude);
+            if(DEBUG){
+                Log.d(AreaTransformActivity.TAG, "cur_lat = " + l.latitude + " ,cur_long = " + l.longitude);
+            }
+            //距離を加算
+            mDistance += mPrev.distanceTo(cur);
+            if(DEBUG){
+                Log.d(AreaTransformActivity.TAG, "distance = " + mDistance + "m");
+            }
+            mPrev = cur;
+        }        
     }
     
     private void touch_up(float x, float y) {
@@ -142,15 +168,16 @@ public class OverlayView extends View {
         //Projectionから緯度、軽度を導き、1ドットの距離を算定する。
         //ドットの総数と距離から面積を求める。
         
-        //始点と終点の距離が一定以上離れているかをチェック
+        //始点と終点の距離
         float dist = mStart.distanceTo(mEnd);
-        //TODO:地図の拡大縮小サイズによって、変更させる
-        if(dist > 1000){//1km
-            //mFlag = true;
-            ((AreaTransformActivity)mContext).displayCircleError();
+        if(DEBUG){
+            Log.d(AreaTransformActivity.TAG, "dist = " + dist);
         }
-        
-        //TODO:2筆以上で描かれている場合もエラーとする
+        //1ピクセルの距離の100倍離れていたらエラーとする
+        if(dist > (m1PxDist * 100)){
+            ((AreaTransformActivity)mContext).displayCircleError();
+            mErrFlag = true;
+        }
     }
 
     public boolean onTouchEvent(MotionEvent event){
@@ -195,13 +222,17 @@ public class OverlayView extends View {
         //初期化
         mDistance = 0.0f;
         mArea = 0.0f;
-    }
-    
-    void setMap(GoogleMap map){
-        mMap = map;
+        //判定フラグを戻す
+        mFlag = false;
+        mErrFlag = false;
     }
     
     float getArea(){
+        //エラーのときは面積を返さない。この場合呼び出し元で計測不能となる。
+        if(mErrFlag){
+            return 0.0f;
+        }
+
         return mArea;
     }
     

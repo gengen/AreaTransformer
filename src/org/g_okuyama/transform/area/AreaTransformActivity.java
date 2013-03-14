@@ -229,8 +229,7 @@ public class AreaTransformActivity extends FragmentActivity {
         mSearchLayout.setVisibility(View.INVISIBLE);
         
         //描画用Viewを追加
-        mOverlay = new OverlayView(this);
-        mOverlay.setMap(mMap);
+        mOverlay = new OverlayView(mMap, this);
             
         FrameLayout frame = (FrameLayout)findViewById(R.id.frame);
         frame.addView(mOverlay, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -244,11 +243,6 @@ public class AreaTransformActivity extends FragmentActivity {
         mSearchLayout.setVisibility(View.VISIBLE);
 
         //面積を計算、表示
-        calcurate();
-    }
-    
-    private void calcurate(){
-        //面積
         float area = mOverlay.getArea();
         Log.d(TAG, "area = " + area + "m2");
         
@@ -286,9 +280,11 @@ public class AreaTransformActivity extends FragmentActivity {
             //マーカを現在地に持ってきたいときは設定する
             //mMap.setMyLocationEnabled(true);
             
+            /*
             if(mOverlay != null){
                 mOverlay.setMap(mMap);
             }
+            */
         }
     }
     
@@ -308,6 +304,24 @@ public class AreaTransformActivity extends FragmentActivity {
                 new AlertDialog.Builder(AreaTransformActivity.this)
                 .setTitle(R.string.notify_circle_title)
                 .setMessage(R.string.notify_circle_message)
+                .setPositiveButton(R.string.notify_circle_yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mOverlay.clearCanvas();
+                    }
+                })
+                .show();
+                return;
+            }
+        });
+    }
+
+    void displayCircleError2(){
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(AreaTransformActivity.this)
+                .setTitle(R.string.notify_circle_title)
+                .setMessage(R.string.notify_circle_message2)
                 .setPositiveButton(R.string.notify_circle_yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mOverlay.clearCanvas();

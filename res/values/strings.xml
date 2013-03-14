@@ -6,6 +6,7 @@
 	<string name="notify_search_yes">はい</string>
 	<string name="notify_circle_title">通知</string>
 	<string name="notify_circle_message">囲んでください</string>
+	<string name="notify_circle_message2">1筆で囲んでください</string>
 	<string name="notify_circle_yes">はい</string>
 	
 	<string name="toast_search_not_found">見つかりませんでした</string>
