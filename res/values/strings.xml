@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ドーム変換くん</string>
+    
+    <string name="button_search">検索</string>
+    <string name="button_circle">囲む</string>
+    <string name="button_calc">測る</string>
+    
 	<string name="notify_search_title">通知</string>
 	<string name="notify_search_message">1文字以上入力してください</string>
 	<string name="notify_search_yes">はい</string>

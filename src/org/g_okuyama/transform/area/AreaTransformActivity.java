@@ -139,7 +139,7 @@ public class AreaTransformActivity extends FragmentActivity {
                     mOverlay = null;
                 }
                 
-                mStartCalcBtn.setText("start");
+                mStartCalcBtn.setText(R.string.button_circle);
                 mClearBtn.setVisibility(View.INVISIBLE);
                 mBackBtn.setVisibility(View.INVISIBLE);
                 mSearchLayout.setVisibility(View.VISIBLE);
@@ -221,7 +221,7 @@ public class AreaTransformActivity extends FragmentActivity {
 
     /*ï`âÊäJén*/
     private void startDrawing(){
-        mStartCalcBtn.setText("cal");
+        mStartCalcBtn.setText(R.string.button_calc);
         //mClearBtn.setEnabled(true);
         mClearBtn.setVisibility(View.VISIBLE);
         //mBackBtn.setEnabled(true);
@@ -237,7 +237,7 @@ public class AreaTransformActivity extends FragmentActivity {
 
     /*ï`âÊñ êœÇÃåvéZ*/
     private void calcurateArea(){
-        mStartCalcBtn.setText("start");
+        mStartCalcBtn.setText(R.string.button_circle);
         mClearBtn.setVisibility(View.INVISIBLE);
         mBackBtn.setVisibility(View.INVISIBLE);
         mSearchLayout.setVisibility(View.VISIBLE);
