@@ -59,7 +59,11 @@
 			    android:id="@+id/start_and_cal"
 		    	android:layout_width="wrap_content"
 			    android:layout_height="match_parent"
+	    	    android:background="@drawable/my_button"
+	       	    android:drawableLeft="@android:drawable/ic_menu_edit"
+	       	    android:drawablePadding="10sp"
 			    android:text="@string/button_circle"
+	        	android:textColor="#ffffff"
 			/>
 		</FrameLayout>
 	    <FrameLayout 

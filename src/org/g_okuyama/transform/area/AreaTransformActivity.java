@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -140,6 +141,10 @@ public class AreaTransformActivity extends FragmentActivity {
                 }
                 
                 mStartCalcBtn.setText(R.string.button_circle);
+                //ボタンのアイコンを設定する
+                Drawable icon = getResources().getDrawable(android.R.drawable.ic_menu_edit);
+                icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+                mStartCalcBtn.setCompoundDrawables(icon, null, null, null);
                 mClearBtn.setVisibility(View.INVISIBLE);
                 mBackBtn.setVisibility(View.INVISIBLE);
                 mSearchLayout.setVisibility(View.VISIBLE);
@@ -222,6 +227,8 @@ public class AreaTransformActivity extends FragmentActivity {
     /*描画開始*/
     private void startDrawing(){
         mStartCalcBtn.setText(R.string.button_calc);
+        //ボタンのアイコンを消す
+        mStartCalcBtn.setCompoundDrawables(null, null, null, null);
         //mClearBtn.setEnabled(true);
         mClearBtn.setVisibility(View.VISIBLE);
         //mBackBtn.setEnabled(true);
@@ -238,6 +245,9 @@ public class AreaTransformActivity extends FragmentActivity {
     /*描画面積の計算*/
     private void calcurateArea(){
         mStartCalcBtn.setText(R.string.button_circle);
+        Drawable icon = getResources().getDrawable(android.R.drawable.ic_menu_edit);
+        icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+        mStartCalcBtn.setCompoundDrawables(icon, null, null, null);
         mClearBtn.setVisibility(View.INVISIBLE);
         mBackBtn.setVisibility(View.INVISIBLE);
         mSearchLayout.setVisibility(View.VISIBLE);
