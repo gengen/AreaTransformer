@@ -1,6 +1,11 @@
 package org.g_okuyama.transform.area;
 
-import android.app.Activity;
+import org.andengine.engine.camera.Camera;
+import org.andengine.engine.options.EngineOptions;
+import org.andengine.engine.options.ScreenOrientation;
+import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.scene.Scene;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -9,13 +14,18 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
-public class DisplayActivity extends Activity {
+public class ResultActivity extends MultiSceneActivity {
+	private int CAMERA_WIDTH = 480;
+	private int CAMERA_HEIGHT = 800;
+
     float mArea = 0.0f;
+    String mResult;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_display);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //setContentView(R.layout.activity_display);
         
         Bundle extras = getIntent().getExtras();
         mArea = extras.getFloat("area", 0.0f);
@@ -31,8 +41,8 @@ public class DisplayActivity extends Activity {
     void calcurate(){
         String setStr = "";
         
-        TextView text = (TextView)findViewById(R.id.unit);
-        TextView area = (TextView)findViewById(R.id.area);
+        //TextView text = (TextView)findViewById(R.id.unit);
+        //TextView area = (TextView)findViewById(R.id.area);
         
         float unit = mArea / 46755; //東京ドーム(m2)
         //大きさによって表示桁を変える
@@ -65,8 +75,8 @@ public class DisplayActivity extends Activity {
         else{
             //測定不能とする
             Log.d(AreaTransformActivity.TAG, "can\'t calcurate");
-            text.setVisibility(View.INVISIBLE);
-            area.setVisibility(View.INVISIBLE);
+            //text.setVisibility(View.INVISIBLE);
+            //area.setVisibility(View.INVISIBLE);
             
             new AlertDialog.Builder(this)
             .setTitle(R.string.notify_calc_title)
@@ -82,8 +92,52 @@ public class DisplayActivity extends Activity {
             return;
         }
         
-        text.setText(setStr);
-        text.append("個分");        
-        area.setText("(" + String.valueOf(Math.round(mArea)) + " m2)");   
+        //text.setText(setStr);
+        //text.append("個分");        
+        //area.setText("(" + String.valueOf(Math.round(mArea)) + " m2)");
+        mResult = setStr;
     }
+    
+    @Override
+	public EngineOptions onCreateEngineOptions() {
+		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+		
+		EngineOptions eo = new EngineOptions(
+				true,
+				ScreenOrientation.PORTRAIT_FIXED,
+				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT),
+				camera);
+		return eo;
+	}
+
+	@Override
+	protected Scene onCreateScene() {
+		MainScene  mainScene = new MainScene(this, mResult);
+		return mainScene;
+	}
+
+	@Override
+	protected int getLayoutID() {
+		return R.layout.activity_result;
+	}
+
+	@Override
+	protected int getRenderSurfaceViewID() {
+		return R.id.renderview;
+	}
+
+	@Override
+	public void appendScene(KeyListenScene scene) {
+		
+	}
+
+	@Override
+	public void backToInitial() {
+		
+	}
+
+	@Override
+	public void refreshRunningScene(KeyListenScene scene) {
+		
+	}
 }

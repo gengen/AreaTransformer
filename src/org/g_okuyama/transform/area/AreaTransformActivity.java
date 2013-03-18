@@ -256,7 +256,8 @@ public class AreaTransformActivity extends FragmentActivity {
         float area = mOverlay.getArea();
         Log.d(TAG, "area = " + area + "m2");
         
-        Intent intent = new Intent(this, DisplayActivity.class);
+        //Intent intent = new Intent(this, DisplayActivity.class);
+        Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("area", area);
         startActivity(intent);
     }
