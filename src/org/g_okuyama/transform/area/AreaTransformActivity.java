@@ -1,6 +1,7 @@
 
 package org.g_okuyama.transform.area;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +47,7 @@ import android.widget.Toast;
 
 public class AreaTransformActivity extends FragmentActivity {
     public static final String TAG = "AreaTransformer";
+    private static final boolean DEBUG = false;
     private static final LatLng TOKYO = new LatLng(35.681382, 139.766084);
 
     private SupportMapFragment mMapFragment = null;
@@ -115,7 +117,6 @@ public class AreaTransformActivity extends FragmentActivity {
         });
         
         mClearBtn = (ImageButton)findViewById(R.id.clear);
-        //mClearBtn.setEnabled(false);
         mClearBtn.setVisibility(View.INVISIBLE);
         mClearBtn.setOnClickListener(new OnClickListener(){
             @Override
@@ -127,7 +128,6 @@ public class AreaTransformActivity extends FragmentActivity {
         });
         
         mBackBtn = (ImageButton)findViewById(R.id.back);
-        //mBackBtn.setEnabled(false);
         mBackBtn.setVisibility(View.INVISIBLE);
         mBackBtn.setOnClickListener(new OnClickListener(){
             @Override
@@ -228,10 +228,12 @@ public class AreaTransformActivity extends FragmentActivity {
     private void startDrawing(){
         mStartCalcBtn.setText(R.string.button_calc);
         //ボタンのアイコンを消す
-        mStartCalcBtn.setCompoundDrawables(null, null, null, null);
-        //mClearBtn.setEnabled(true);
+        //mStartCalcBtn.setCompoundDrawables(null, null, null, null);
+        //ボタンのアイコンを設定する
+        Drawable icon = getResources().getDrawable(android.R.drawable.ic_menu_set_as);
+        icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+        mStartCalcBtn.setCompoundDrawables(icon, null, null, null);
         mClearBtn.setVisibility(View.VISIBLE);
-        //mBackBtn.setEnabled(true);
         mBackBtn.setVisibility(View.VISIBLE);
         mSearchLayout.setVisibility(View.INVISIBLE);
         
@@ -244,6 +246,16 @@ public class AreaTransformActivity extends FragmentActivity {
 
     /*描画面積の計算*/
     private void calcurateArea(){
+        //面積を計算、表示
+        float area = mOverlay.getArea();
+        if(DEBUG){
+            Log.d(TAG, "area = " + area + "m2");
+        }
+        
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra("area", area);
+        startActivity(intent);
+
         mStartCalcBtn.setText(R.string.button_circle);
         Drawable icon = getResources().getDrawable(android.R.drawable.ic_menu_edit);
         icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
@@ -251,15 +263,6 @@ public class AreaTransformActivity extends FragmentActivity {
         mClearBtn.setVisibility(View.INVISIBLE);
         mBackBtn.setVisibility(View.INVISIBLE);
         mSearchLayout.setVisibility(View.VISIBLE);
-
-        //面積を計算、表示
-        float area = mOverlay.getArea();
-        Log.d(TAG, "area = " + area + "m2");
-        
-        //Intent intent = new Intent(this, DisplayActivity.class);
-        Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra("area", area);
-        startActivity(intent);
     }
     
     @Override
@@ -290,13 +293,15 @@ public class AreaTransformActivity extends FragmentActivity {
             setDefaultLocation();
             //マーカを現在地に持ってきたいときは設定する
             //mMap.setMyLocationEnabled(true);
-            
-            /*
-            if(mOverlay != null){
-                mOverlay.setMap(mMap);
-            }
-            */
         }
+    }
+    
+    @Override
+    protected void onPause(){
+        super.onPause();
+        
+        //アプリのキャッシュ削除
+        deleteCache(getCacheDir());     
     }
     
     /*マップのデフォルト表示位置を設定*/
@@ -308,6 +313,7 @@ public class AreaTransformActivity extends FragmentActivity {
         mMap.moveCamera(camera);
     }
     
+    /*囲んでないときのエラー表示*/
     void displayCircleError(){
         mHandler.post(new Runnable() {
             @Override
@@ -326,6 +332,7 @@ public class AreaTransformActivity extends FragmentActivity {
         });
     }
 
+    /*1筆で囲んでないときのエラー表示*/
     void displayCircleError2(){
         mHandler.post(new Runnable() {
             @Override
@@ -342,5 +349,22 @@ public class AreaTransformActivity extends FragmentActivity {
                 return;
             }
         });
+    }
+    
+    //キャッシュの削除
+    public boolean deleteCache(File dir) {
+        if(dir==null) {
+            return false;
+        }
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteCache(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
     }
 }

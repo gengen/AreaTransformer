@@ -22,7 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class OverlayView extends View {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     
     Context mContext;
     

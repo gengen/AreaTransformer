@@ -8,6 +8,7 @@ import org.andengine.entity.scene.Scene;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,8 +16,10 @@ import android.view.Window;
 import android.widget.TextView;
 
 public class ResultActivity extends MultiSceneActivity {
-	private int CAMERA_WIDTH = 480;
-	private int CAMERA_HEIGHT = 800;
+    //private int CAMERA_WIDTH = 480;
+    //private int CAMERA_HEIGHT = 800;
+    private int CAMERA_WIDTH = 200;
+    private int CAMERA_HEIGHT = 200;
 
     float mArea = 0.0f;
     String mResult;
@@ -101,13 +104,29 @@ public class ResultActivity extends MultiSceneActivity {
     @Override
 	public EngineOptions onCreateEngineOptions() {
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-		
-		EngineOptions eo = new EngineOptions(
-				true,
-				ScreenOrientation.PORTRAIT_FIXED,
-				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT),
-				camera);
-		return eo;
+
+		//現在の端末の向きによってオリエンテーションを変える
+		ScreenOrientation so = ScreenOrientation.PORTRAIT_FIXED;
+		Configuration config = getResources().getConfiguration();
+		if(config.orientation == Configuration.ORIENTATION_LANDSCAPE) { 
+		    so = ScreenOrientation.LANDSCAPE_FIXED;
+		} 
+
+        EngineOptions eo = new EngineOptions(
+                true,
+                so,
+                new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT),
+                camera);
+
+        /*
+        EngineOptions eo = new EngineOptions(
+                true,
+                ScreenOrientation.PORTRAIT_FIXED,
+                new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT),
+                camera);
+                */
+
+        return eo;
 	}
 
 	@Override
