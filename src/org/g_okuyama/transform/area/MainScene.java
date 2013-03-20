@@ -3,26 +3,42 @@ package org.g_okuyama.transform.area;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.ScaleModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.opengl.font.BitmapFont;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.texture.Texture;
+import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.util.HorizontalAlign;
+import org.andengine.util.color.Color;
 
+import android.graphics.Typeface;
 import android.view.KeyEvent;
 
 public class MainScene extends KeyListenScene {
 	
 	String mResult;
+	String mArea;
 	
-	public MainScene(MultiSceneActivity baseActivity, String result){
+	public MainScene(MultiSceneActivity baseActivity, String result, String area){
 		super(baseActivity);
 		mResult = result;
+		mArea = area;
 		init();
 	}
 	
 	public void init(){
-		//attachChild(getBaseActivity().getResourceUtil().getSprite("main_bg.png"));
+		//バックグラウンド
+		attachChild(getBaseActivity().getResourceUtil().getSprite("bg.png"));
 		
+		//東京ドームアイコン
+		Sprite dome = getBaseActivity().getResourceUtil().getSprite("dome.png");
+		placeToCenterX(dome, 0);
+		attachChild(dome);
+		
+		//結果表示用フォント
 		BitmapFont bitmapFont = 
 				new BitmapFont(
 						getBaseActivity().getTextureManager(),
@@ -30,10 +46,38 @@ public class MainScene extends KeyListenScene {
 						"font/score.fnt");
 		bitmapFont.load();
 		
-		Text result = new Text(100, 100, bitmapFont, mResult, 20, new TextOptions(HorizontalAlign.CENTER), 
+		//結果表示用テキスト
+		Text result = new Text(0, 0, bitmapFont, mResult, 20, new TextOptions(HorizontalAlign.CENTER), 
 				getBaseActivity().getVertexBufferObjectManager());
+		//X軸は真ん中に寄せる
+		float x1 = 150 - result.getWidth()/2f;
+		float y1 = 0 + dome.getHeight()/*ドームアイコン分*/ + 0/*マージン*/;
+		result.setPosition(x1, y1);
 		attachChild(result);
 		
+		//フォントを指定
+		Texture texture = new BitmapTextureAtlas(getBaseActivity().getTextureManager(), 480, 800, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		Font font = new Font(getBaseActivity().getFontManager(), texture, Typeface.DEFAULT_BOLD, 20, true, Color.BLACK);
+		getBaseActivity().getTextureManager().loadTexture(texture);
+		getBaseActivity().getFontManager().loadFont(font);
+
+		//単位表示
+		Text unit = new Text(0, 0, font, "個分", 20, new TextOptions(HorizontalAlign.CENTER), getBaseActivity().getVertexBufferObjectManager());
+		//X軸につき真ん中に寄せる
+		float x2 = 150 - unit.getWidth()/2f;
+		float y2 = y1 + result.getHeight() + 5/*マージン*/;
+		unit.setPosition(x2, y2);
+		attachChild(unit);
+
+		//面積表示
+		Text area = new Text(0, 0, font, "(" + mArea + " m2)", 20, new TextOptions(HorizontalAlign.CENTER), getBaseActivity().getVertexBufferObjectManager());
+		//X軸につき真ん中に寄せる
+		float x3 = 150 - area.getWidth()/2f;
+		float y3 = y2 + unit.getHeight() + 10/*マージン*/;
+		area.setPosition(x3, y3);
+		attachChild(area);
+		
+		//結果表示にアニメーションを付ける
 		result.registerEntityModifier(new LoopEntityModifier(
 				new SequenceEntityModifier(
 						new ScaleModifier(0.2f, 1.0f, 1.4f), 

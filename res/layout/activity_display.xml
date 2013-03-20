@@ -17,7 +17,6 @@
             android:layout_width="0pt"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/dome"
         />
         
         <TextView

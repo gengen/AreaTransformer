@@ -3,6 +3,7 @@ package org.g_okuyama.transform.area;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
+import org.andengine.engine.options.resolutionpolicy.FixedResolutionPolicy;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 
@@ -18,8 +19,8 @@ import android.widget.TextView;
 public class ResultActivity extends MultiSceneActivity {
     //private int CAMERA_WIDTH = 480;
     //private int CAMERA_HEIGHT = 800;
-    private int CAMERA_WIDTH = 200;
-    private int CAMERA_HEIGHT = 200;
+    private int CAMERA_WIDTH = 300;
+	private int CAMERA_HEIGHT = 370;
 
     float mArea = 0.0f;
     String mResult;
@@ -115,7 +116,8 @@ public class ResultActivity extends MultiSceneActivity {
         EngineOptions eo = new EngineOptions(
                 true,
                 so,
-                new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT),
+                //new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT),
+                new FixedResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT),
                 camera);
 
         /*
@@ -131,7 +133,7 @@ public class ResultActivity extends MultiSceneActivity {
 
 	@Override
 	protected Scene onCreateScene() {
-		MainScene  mainScene = new MainScene(this, mResult);
+		MainScene  mainScene = new MainScene(this, mResult, String.valueOf(Math.round(mArea)));
 		return mainScene;
 	}
 
