@@ -27,7 +27,7 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCtMEWeG9pLmOgwxHkSmexgD3ToQwmzZ6w"/>
+            android:value="AIzaSyCOhqfYk5cV1gyzzFdH9Va99YX0RmhH36s"/>
         <activity
             android:name="org.g_okuyama.transform.area.AreaTransformActivity"
             android:configChanges="orientation|keyboardHidden" 
@@ -39,9 +39,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.g_okuyama.transform.area.DisplayActivity"
+            android:name="org.g_okuyama.transform.area.ResultActivity"
             android:configChanges="orientation|keyboardHidden" 
-	    	android:theme="@android:style/Theme.Dialog"
+	    	android:theme="@style/CustomThemeDialog"
 	   	>
         </activity>
     </application>

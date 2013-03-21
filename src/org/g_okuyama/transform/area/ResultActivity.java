@@ -37,7 +37,7 @@ public class ResultActivity extends MultiSceneActivity {
         Bundle extras = getIntent().getExtras();
         mArea = extras.getFloat("area", 0.0f);
 
-        showDialog();
+        //showDialog();
     }
     
     private void showDialog(){
