@@ -33,6 +33,9 @@ public class MainScene extends KeyListenScene {
 		//バックグラウンド
 		attachChild(getBaseActivity().getResourceUtil().getSprite("bg.png"));
 		
+		//プログレスダイアログを止める
+		((ResultActivity)getBaseActivity()).dismissDialog();
+		
 		//東京ドームアイコン
 		Sprite dome = getBaseActivity().getResourceUtil().getSprite("dome.png");
 		placeToCenterX(dome, 0);

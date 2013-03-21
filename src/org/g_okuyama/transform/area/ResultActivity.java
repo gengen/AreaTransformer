@@ -8,6 +8,7 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -21,9 +22,11 @@ public class ResultActivity extends MultiSceneActivity {
     //private int CAMERA_HEIGHT = 800;
     private int CAMERA_WIDTH = 300;
 	private int CAMERA_HEIGHT = 370;
+	
+	private ProgressDialog mDialog; 
 
     float mArea = 0.0f;
-    String mResult;
+    String mResult = null;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,23 @@ public class ResultActivity extends MultiSceneActivity {
         
         Bundle extras = getIntent().getExtras();
         mArea = extras.getFloat("area", 0.0f);
+
+        showDialog();
+    }
+    
+    private void showDialog(){
+        //プログレスダイアログ表示
+        mDialog = new ProgressDialog(this);
+        mDialog.setMessage(getString(R.string.notify_progress_message));
+        mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mDialog.show(); 
+    }
+    
+    public void dismissDialog(){
+        if(mDialog != null){
+            mDialog.dismiss();
+            mDialog = null;
+        }
     }
     
     @Override
@@ -81,6 +101,8 @@ public class ResultActivity extends MultiSceneActivity {
             Log.d(AreaTransformActivity.TAG, "can\'t calcurate");
             //text.setVisibility(View.INVISIBLE);
             //area.setVisibility(View.INVISIBLE);
+            
+            dismissDialog();
             
             new AlertDialog.Builder(this)
             .setTitle(R.string.notify_calc_title)
@@ -133,6 +155,10 @@ public class ResultActivity extends MultiSceneActivity {
 
 	@Override
 	protected Scene onCreateScene() {
+	    if(mResult == null){
+	        return null;
+	    }
+	    
 		MainScene  mainScene = new MainScene(this, mResult, String.valueOf(Math.round(mArea)));
 		return mainScene;
 	}

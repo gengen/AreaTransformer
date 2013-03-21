@@ -20,4 +20,6 @@
 	<string name="notify_calc_message">計測不能です</string>
 	<string name="notify_calc_yes">はい</string>
 	
+	<string name="notify_progress_message">計算中...</string>
+	
 </resources>
