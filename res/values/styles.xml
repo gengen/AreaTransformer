@@ -17,4 +17,8 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="CustomThemeDialog" parent="@android:style/Theme.Dialog">
+    	<item name="android:backgroundDimAmount">0.0</item>
+	</style>
+
 </resources>
