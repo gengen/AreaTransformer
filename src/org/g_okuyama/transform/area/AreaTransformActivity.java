@@ -121,7 +121,7 @@ public class AreaTransformActivity extends FragmentActivity {
         });
         
         mClearBtn = (ImageButton)findViewById(R.id.clear);
-        mClearBtn.setVisibility(View.INVISIBLE);
+        //mClearBtn.setVisibility(View.INVISIBLE);
         mClearBtn.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -132,7 +132,7 @@ public class AreaTransformActivity extends FragmentActivity {
         });
         
         mBackBtn = (ImageButton)findViewById(R.id.back);
-        mBackBtn.setVisibility(View.INVISIBLE);
+        //mBackBtn.setVisibility(View.INVISIBLE);
         mBackBtn.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -261,6 +261,8 @@ public class AreaTransformActivity extends FragmentActivity {
         intent.putExtra("area", area);
         startActivity(intent);
 
+        //move to onResume
+        /*
         mStartCalcBtn.setText(R.string.button_circle);
         Drawable icon = getResources().getDrawable(android.R.drawable.ic_menu_edit);
         icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
@@ -269,6 +271,7 @@ public class AreaTransformActivity extends FragmentActivity {
         mBackBtn.setVisibility(View.INVISIBLE);
         mSearchLayout.setVisibility(View.VISIBLE);
         mAdstirView.setVisibility(View.VISIBLE);
+        */
     }
     
     @Override
@@ -296,6 +299,7 @@ public class AreaTransformActivity extends FragmentActivity {
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             UiSettings settings = mMap.getUiSettings();
             settings.setCompassEnabled(true);
+            settings.setZoomControlsEnabled(false);
             setDefaultLocation();
             //マーカを現在地に持ってきたいときは設定する
             //mMap.setMyLocationEnabled(true);
@@ -306,6 +310,15 @@ public class AreaTransformActivity extends FragmentActivity {
             LinearLayout layout = (LinearLayout)findViewById(R.id.adspace);
             layout.addView(mAdstirView);
         }
+        
+        mStartCalcBtn.setText(R.string.button_circle);
+        Drawable icon = getResources().getDrawable(android.R.drawable.ic_menu_edit);
+        icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+        mStartCalcBtn.setCompoundDrawables(icon, null, null, null);
+        mClearBtn.setVisibility(View.INVISIBLE);
+        mBackBtn.setVisibility(View.INVISIBLE);
+        mSearchLayout.setVisibility(View.VISIBLE);
+        mAdstirView.setVisibility(View.VISIBLE);
     }
     
     @Override

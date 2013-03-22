@@ -21,9 +21,11 @@ public class MainScene extends KeyListenScene {
 	
 	String mResult;
 	String mArea;
+	MultiSceneActivity mActivity;
 	
 	public MainScene(MultiSceneActivity baseActivity, String result, String area){
 		super(baseActivity);
+		mActivity = baseActivity;
 		mResult = result;
 		mArea = area;
 		init();
@@ -34,11 +36,13 @@ public class MainScene extends KeyListenScene {
 		attachChild(getBaseActivity().getResourceUtil().getSprite("bg.png"));
 		
 		//プログレスダイアログを止める
-		((ResultActivity)getBaseActivity()).dismissDialog();
+		//((ResultActivity)getBaseActivity()).deleteDialog();
+		//ResultActivity.sDialog.dismiss();
 		
+		float up = 10;
 		//東京ドームアイコン
 		Sprite dome = getBaseActivity().getResourceUtil().getSprite("dome.png");
-		placeToCenterX(dome, 0);
+		placeToCenterX(dome, up);
 		attachChild(dome);
 		
 		//結果表示用フォント
@@ -80,8 +84,8 @@ public class MainScene extends KeyListenScene {
 		Text result = new Text(0, 0, retFont, mResult, 20, new TextOptions(HorizontalAlign.CENTER), 
 				getBaseActivity().getVertexBufferObjectManager());
 		//X軸は真ん中に寄せる
-		float x1 = 150 - result.getWidth()/2f;
-		float y1 = 0 + dome.getHeight()/*ドームアイコン分*/ + 0/*マージン*/;
+		float x1 = ResultActivity.CAMERA_WIDTH/2f - result.getWidth()/2f;
+		float y1 = up + dome.getHeight()/*ドームアイコン分*/ + 10/*マージン*/;
 		result.setPosition(x1, y1);
 		attachChild(result);
 		
@@ -94,7 +98,7 @@ public class MainScene extends KeyListenScene {
 		//単位表示
 		Text unit = new Text(0, 0, font, "個分", 20, new TextOptions(HorizontalAlign.CENTER), getBaseActivity().getVertexBufferObjectManager());
 		//X軸につき真ん中に寄せる
-		float x2 = 150 - unit.getWidth()/2f;
+		float x2 = ResultActivity.CAMERA_WIDTH/2f - unit.getWidth()/2f;
 		float y2 = y1 + result.getHeight() + 5/*マージン*/;
 		unit.setPosition(x2, y2);
 		attachChild(unit);
@@ -102,7 +106,7 @@ public class MainScene extends KeyListenScene {
 		//面積表示
 		Text area = new Text(0, 0, font, "(" + mArea + " m2)", 20, new TextOptions(HorizontalAlign.CENTER), getBaseActivity().getVertexBufferObjectManager());
 		//X軸につき真ん中に寄せる
-		float x3 = 150 - area.getWidth()/2f;
+		float x3 = ResultActivity.CAMERA_WIDTH/2f - area.getWidth()/2f;
 		float y3 = y2 + unit.getHeight() + 10/*マージン*/;
 		area.setPosition(x3, y3);
 		attachChild(area);

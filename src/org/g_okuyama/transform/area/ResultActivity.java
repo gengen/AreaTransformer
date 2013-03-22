@@ -20,12 +20,11 @@ import android.widget.TextView;
 public class ResultActivity extends MultiSceneActivity {
     //private int CAMERA_WIDTH = 480;
     //private int CAMERA_HEIGHT = 800;
-    private int CAMERA_WIDTH = 300;
-	private int CAMERA_HEIGHT = 370;
+    public static final int CAMERA_WIDTH = 250;
+	public static final int CAMERA_HEIGHT = 280;
 	
-	private static ProgressDialog mDialog; 
+	static ProgressDialog sDialog; 
 
-    //float mArea = 0.0f;
 	double mArea = 0.0;
     String mResult = null;
     
@@ -36,21 +35,21 @@ public class ResultActivity extends MultiSceneActivity {
         Bundle extras = getIntent().getExtras();
         mArea = extras.getDouble("area", 0.0);
 
-        showDialog();
+        //showDialog();
     }
     
     private void showDialog(){
         //プログレスダイアログ表示
-        mDialog = new ProgressDialog(this);
-        mDialog.setMessage(getString(R.string.notify_progress_message));
-        mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mDialog.show(); 
+        sDialog = new ProgressDialog(this);
+        sDialog.setMessage(getString(R.string.notify_progress_message));
+        sDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        sDialog.show(); 
     }
     
-    public void dismissDialog(){
-        if(mDialog != null){
-            mDialog.dismiss();
-            mDialog = null;
+    public void deleteDialog(){
+        if(sDialog != null){
+            sDialog.dismiss();
+            sDialog = null;
         }
     }
     
@@ -96,7 +95,7 @@ public class ResultActivity extends MultiSceneActivity {
             //測定不能とする
             Log.d(AreaTransformActivity.TAG, "can\'t calcurate");
             
-            dismissDialog();
+            deleteDialog();
             
             new AlertDialog.Builder(this)
             .setTitle(R.string.notify_calc_title)
