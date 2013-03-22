@@ -23,21 +23,20 @@ public class ResultActivity extends MultiSceneActivity {
     private int CAMERA_WIDTH = 300;
 	private int CAMERA_HEIGHT = 370;
 	
-	private ProgressDialog mDialog; 
+	private static ProgressDialog mDialog; 
 
-    float mArea = 0.0f;
+    //float mArea = 0.0f;
+	double mArea = 0.0;
     String mResult = null;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //setContentView(R.layout.activity_display);
         
         Bundle extras = getIntent().getExtras();
-        mArea = extras.getFloat("area", 0.0f);
+        mArea = extras.getDouble("area", 0.0);
 
-        //showDialog();
+        showDialog();
     }
     
     private void showDialog(){
@@ -65,42 +64,37 @@ public class ResultActivity extends MultiSceneActivity {
     void calcurate(){
         String setStr = "";
         
-        //TextView text = (TextView)findViewById(R.id.unit);
-        //TextView area = (TextView)findViewById(R.id.area);
-        
-        float unit = mArea / 46755; //東京ドーム(m2)
+        double unit = mArea / 46755; //東京ドーム(m2)
         //大きさによって表示桁を変える
         if(unit >= 100.0){
             //小数点は表示しない
-            int i = Math.round(unit);
+            long i = Math.round(unit);
             setStr = String.valueOf(i);
         }
         else if(unit >= 1.0){
             //小数点1桁まで表示
-            float tmp = unit * 10;
-            int i = Math.round(tmp);
-            float ret = (float)i / 10;
+            double tmp = unit * 10;
+            long i =  Math.round(tmp);
+            double ret = (double)i / 10;
             setStr = String.valueOf(ret);
         }
         else if(unit < 1.0 && unit >= 0.01){
             //小数点2桁まで表示
-            float tmp = unit * 100;
-            int i = Math.round(tmp);
-            float ret = (float)i / 100;
+            double tmp = unit * 100;
+            long i = Math.round(tmp);
+            double ret = (double)i / 100;
             setStr = String.valueOf(ret);            
         }
         else if(unit < 0.01 && unit >= 0.001){
             //小数点3桁まで表示
-            float tmp = unit * 1000;
-            int i = Math.round(tmp);
-            float ret = (float)i / 1000;
+            double tmp = unit * 1000;
+            long i = Math.round(tmp);
+            long ret = (long)i / 1000;
             setStr = String.valueOf(ret);
         }
         else{
             //測定不能とする
             Log.d(AreaTransformActivity.TAG, "can\'t calcurate");
-            //text.setVisibility(View.INVISIBLE);
-            //area.setVisibility(View.INVISIBLE);
             
             dismissDialog();
             

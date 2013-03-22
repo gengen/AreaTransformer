@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import com.ad_stir.AdstirTerminate;
+import com.ad_stir.AdstirView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -65,6 +67,8 @@ public class AreaTransformActivity extends FragmentActivity {
     LinearLayout mSearchLayout;
     //モードフラグ(0:地図モード、1:描画モード)
     int mMode = 0;
+    
+    AdstirView mAdstirView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,9 +152,9 @@ public class AreaTransformActivity extends FragmentActivity {
                 mClearBtn.setVisibility(View.INVISIBLE);
                 mBackBtn.setVisibility(View.INVISIBLE);
                 mSearchLayout.setVisibility(View.VISIBLE);
+                mAdstirView.setVisibility(View.VISIBLE);
                 mMode = 0;
             }
-            
         });
     }
     
@@ -236,6 +240,7 @@ public class AreaTransformActivity extends FragmentActivity {
         mClearBtn.setVisibility(View.VISIBLE);
         mBackBtn.setVisibility(View.VISIBLE);
         mSearchLayout.setVisibility(View.INVISIBLE);
+        mAdstirView.setVisibility(View.INVISIBLE);
         
         //描画用Viewを追加
         mOverlay = new OverlayView(mMap, this);
@@ -247,7 +252,7 @@ public class AreaTransformActivity extends FragmentActivity {
     /*描画面積の計算*/
     private void calcurateArea(){
         //面積を計算、表示
-        float area = mOverlay.getArea();
+        double area = mOverlay.getArea();
         if(DEBUG){
             Log.d(TAG, "area = " + area + "m2");
         }
@@ -263,6 +268,7 @@ public class AreaTransformActivity extends FragmentActivity {
         mClearBtn.setVisibility(View.INVISIBLE);
         mBackBtn.setVisibility(View.INVISIBLE);
         mSearchLayout.setVisibility(View.VISIBLE);
+        mAdstirView.setVisibility(View.VISIBLE);
     }
     
     @Override
@@ -294,14 +300,22 @@ public class AreaTransformActivity extends FragmentActivity {
             //マーカを現在地に持ってきたいときは設定する
             //mMap.setMyLocationEnabled(true);
         }
+        
+        if(mAdstirView == null){
+            mAdstirView = new AdstirView(this, "MEDIA-d9327c32", 1);
+            LinearLayout layout = (LinearLayout)findViewById(R.id.adspace);
+            layout.addView(mAdstirView);
+        }
     }
     
     @Override
     protected void onPause(){
         super.onPause();
         
+        AdstirTerminate.init(this);
+        
         //アプリのキャッシュ削除
-        deleteCache(getCacheDir());     
+        deleteCache(getCacheDir());
     }
     
     /*マップのデフォルト表示位置を設定*/

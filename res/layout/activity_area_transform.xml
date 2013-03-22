@@ -41,7 +41,15 @@
         />
         
     </LinearLayout>
-
+    
+	<LinearLayout
+		android:id="@+id/adspace"
+   		android:layout_width="320sp"
+   		android:layout_height="50sp"
+   		android:layout_gravity="bottom"
+   		android:background="#00000000"
+	>
+	</LinearLayout>
     </FrameLayout>        
     
     <FrameLayout

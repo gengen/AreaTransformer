@@ -34,7 +34,7 @@ public class MainScene extends KeyListenScene {
 		attachChild(getBaseActivity().getResourceUtil().getSprite("bg.png"));
 		
 		//プログレスダイアログを止める
-		//((ResultActivity)getBaseActivity()).dismissDialog();
+		((ResultActivity)getBaseActivity()).dismissDialog();
 		
 		//東京ドームアイコン
 		Sprite dome = getBaseActivity().getResourceUtil().getSprite("dome.png");
@@ -42,15 +42,42 @@ public class MainScene extends KeyListenScene {
 		attachChild(dome);
 		
 		//結果表示用フォント
+		/*
 		BitmapFont bitmapFont = 
 				new BitmapFont(
 						getBaseActivity().getTextureManager(),
 						getBaseActivity().getAssets(),
 						"font/score.fnt");
 		bitmapFont.load();
+		*/
+
+		//結果によってフォントサイズを変化させる
+		int size = 25;
+		float ret = Float.valueOf(mResult);
+		if(ret < 10000){
+		    size = 40;
+		}
+		else if(ret < 100000){
+		    size = 35;
+		}
+		else if(ret < 1000000){
+		    size = 30;
+		}
+		
+		//フォントを指定
+        Texture retTexture = new BitmapTextureAtlas(getBaseActivity().getTextureManager(), 480, 800, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        Font retFont = new Font(
+                getBaseActivity().getFontManager(),
+                retTexture,
+                Typeface.createFromAsset(getBaseActivity().getAssets(), "font/BMcube.TTF"),
+                size,
+                true,
+                Color.BLACK);
+        getBaseActivity().getTextureManager().loadTexture(retTexture);
+        getBaseActivity().getFontManager().loadFont(retFont);
 		
 		//結果表示用テキスト
-		Text result = new Text(0, 0, bitmapFont, mResult, 20, new TextOptions(HorizontalAlign.CENTER), 
+		Text result = new Text(0, 0, retFont, mResult, 20, new TextOptions(HorizontalAlign.CENTER), 
 				getBaseActivity().getVertexBufferObjectManager());
 		//X軸は真ん中に寄せる
 		float x1 = 150 - result.getWidth()/2f;

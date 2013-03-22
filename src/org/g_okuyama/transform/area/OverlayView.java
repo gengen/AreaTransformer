@@ -42,11 +42,11 @@ public class OverlayView extends View {
     private Location mPrev;
     private Projection mProjection;
     //距離
-    private float mDistance = 0.0f;
+    private double mDistance = 0.0;
     //1ピクセルの距離
     private float m1PxDist = 0.0f;
     //面積
-    private float mArea = 0.0f;
+    private double mArea = 0.0;
     //1筆で描かれているかの判定フラグ
     private boolean mFlag = false;
     //エラーフラグ(エラーダイアログ表示したのにOKが押されなかったとき用)
@@ -227,7 +227,7 @@ public class OverlayView extends View {
         mErrFlag = false;
     }
     
-    float getArea(){
+    double getArea(){
         //エラーのときは面積を返さない。この場合呼び出し元で計測不能となる。
         if(mErrFlag){
             return 0.0f;
@@ -236,7 +236,7 @@ public class OverlayView extends View {
         return mArea;
     }
     
-    float getDistance(){
+    double getDistance(){
         return mDistance;
     }
 }
