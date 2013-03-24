@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -49,7 +50,7 @@ import android.widget.Toast;
 
 public class AreaTransformActivity extends FragmentActivity {
     public static final String TAG = "AreaTransformer";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final LatLng TOKYO = new LatLng(35.681382, 139.766084);
 
     private SupportMapFragment mMapFragment = null;
@@ -305,6 +306,7 @@ public class AreaTransformActivity extends FragmentActivity {
             //mMap.setMyLocationEnabled(true);
         }
         
+        //広告設定
         if(mAdstirView == null){
             mAdstirView = new AdstirView(this, "MEDIA-d9327c32", 1);
             LinearLayout layout = (LinearLayout)findViewById(R.id.adspace);
@@ -329,6 +331,18 @@ public class AreaTransformActivity extends FragmentActivity {
         
         //アプリのキャッシュ削除
         deleteCache(getCacheDir());
+    }
+    
+    public void onConfigurationChanged(Configuration newConfig){
+    	super.onConfigurationChanged(newConfig);
+    	
+    	if(DEBUG){
+    		Log.d(TAG, "onConfigurationChanged");
+    	}
+    	
+    	if(mOverlay != null){
+    		mOverlay.clearCanvas();
+    	}
     }
     
     /*マップのデフォルト表示位置を設定*/
@@ -393,5 +407,9 @@ public class AreaTransformActivity extends FragmentActivity {
             }
         }
         return dir.delete();
+    }
+    
+    public void finish(){
+    	System.exit(RESULT_OK);
     }
 }

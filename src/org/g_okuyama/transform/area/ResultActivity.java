@@ -6,15 +6,23 @@ import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FixedResolutionPolicy;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
+import org.andengine.opengl.view.RenderSurfaceView;
+
+import com.ad_stir.AdstirTerminate;
+import com.ad_stir.AdstirView;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ResultActivity extends MultiSceneActivity {
@@ -24,6 +32,7 @@ public class ResultActivity extends MultiSceneActivity {
 	public static final int CAMERA_HEIGHT = 280;
 	
 	static ProgressDialog sDialog; 
+	Handler mHandler;
 
 	double mArea = 0.0;
     String mResult = null;
@@ -35,7 +44,25 @@ public class ResultActivity extends MultiSceneActivity {
         Bundle extras = getIntent().getExtras();
         mArea = extras.getDouble("area", 0.0);
 
-        //showDialog();
+        /*
+        mHandler = new Handler();
+        mHandler.post(new Runnable(){
+			@Override
+			public void run() {
+				showDialog();
+			}
+        });
+        */
+        
+        /*
+        RenderSurfaceView view = (RenderSurfaceView)findViewById(R.id.renderview);
+        view.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				finish();
+			}
+        });
+        */
     }
     
     private void showDialog(){
@@ -59,7 +86,7 @@ public class ResultActivity extends MultiSceneActivity {
         
         calcurate();
     }
-    
+
     void calcurate(){
         String setStr = "";
         
@@ -155,6 +182,18 @@ public class ResultActivity extends MultiSceneActivity {
 		MainScene  mainScene = new MainScene(this, mResult, String.valueOf(Math.round(mArea)));
 		return mainScene;
 	}
+	
+    @Override
+    protected void onPause(){
+        super.onPause();
+        
+        try{
+        	getResourceUtil().resetAllTexture();
+
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
+    }
 
 	@Override
 	protected int getLayoutID() {
@@ -179,5 +218,11 @@ public class ResultActivity extends MultiSceneActivity {
 	@Override
 	public void refreshRunningScene(KeyListenScene scene) {
 		
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		finish();
+		return super.onTouchEvent(event);
 	}
 }

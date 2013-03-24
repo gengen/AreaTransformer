@@ -3,9 +3,12 @@ package org.g_okuyama.transform.area;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.ScaleModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
+import org.andengine.entity.scene.IOnSceneTouchListener;
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.font.BitmapFont;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.Texture;
@@ -15,13 +18,15 @@ import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
 
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.view.KeyEvent;
 
-public class MainScene extends KeyListenScene {
+public class MainScene extends KeyListenScene implements IOnSceneTouchListener{
 	
 	String mResult;
 	String mArea;
 	MultiSceneActivity mActivity;
+	Handler mHandler;
 	
 	public MainScene(MultiSceneActivity baseActivity, String result, String area){
 		super(baseActivity);
@@ -35,9 +40,17 @@ public class MainScene extends KeyListenScene {
 		//バックグラウンド
 		attachChild(getBaseActivity().getResourceUtil().getSprite("bg.png"));
 		
+		/*
 		//プログレスダイアログを止める
-		//((ResultActivity)getBaseActivity()).deleteDialog();
-		//ResultActivity.sDialog.dismiss();
+		mHandler = new Handler();
+		mHandler.post(new Runnable(){
+			@Override
+			public void run() {
+				((ResultActivity)getBaseActivity()).deleteDialog();
+				//ResultActivity.sDialog.dismiss();
+			}
+		});
+		*/
 		
 		float up = 10;
 		//東京ドームアイコン
@@ -125,6 +138,11 @@ public class MainScene extends KeyListenScene {
 
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent e) {
+		return false;
+	}
+
+	@Override
+	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
 		return false;
 	}
 }
