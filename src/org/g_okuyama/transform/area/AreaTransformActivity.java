@@ -50,7 +50,7 @@ import android.widget.Toast;
 
 public class AreaTransformActivity extends FragmentActivity {
     public static final String TAG = "AreaTransformer";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final LatLng TOKYO = new LatLng(35.681382, 139.766084);
 
     private SupportMapFragment mMapFragment = null;
